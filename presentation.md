@@ -225,7 +225,7 @@ note: views with unreachable sentinels, or with move-only iterators are "less" t
 
 ```c++
 #include <ranges> // new header for ranges and views
-#include <algorithms> // old header for new algorithms
+#include <algorithm> // old header for new algorithms
 
 namespace std::ranges { … }; // new algorithms and views
 namespace std::ranges::views { … }; // adaptors namespace
@@ -574,11 +574,11 @@ note: Explain lazy and cheap nicely.
 --
 
 * Views are (almost) stateless
-* The only data they contain is
-* Whatever data is needed for the view (```take(10)``` for example)
-* And a reference to the "source" view
-* Containers are not views
-* But, containers can be wrapped with a ```rev_view```
+* The only data they contain is {.fragment}
+* Whatever data is needed for the view (```take(10)``` for example) {.fragment}
+* And a reference to the "source" view {.fragment}
+* Containers are not views {.fragment}
+* But, containers can be wrapped with a ```ref_view``` {.fragment}
 
 note: Actually storage is done by chaining templates
 
@@ -659,6 +659,11 @@ evenSquares l = map (^2) $ filter even l
 
 main :: IO ()
 main = print $ evenSquares [1, 2, 3, 4, 5]
+```
+
+``` {.fragment}
+$ ./haskell_even_list 
+[4,16]
 ```
 
 Only IO operations make the code to execute {.fragment}
@@ -1193,11 +1198,11 @@ for: i=36
 
 I mentioned containers not being views.
 
-Our ```std::vector``` got wrapped by ```std::views::all``` into a ```std::ranges::rev_view```. {.fragment}
+Our ```std::vector``` got wrapped by ```std::views::all``` into a ```std::ranges::ref_view```. {.fragment}
 
 The views don't hold data, that enables them to be cheap. {.fragment}
 
-So, ```rev_view``` doesn't hold the ```vector```, only a reference to it (a pointer). {.fragment}
+So, ```ref_view``` doesn't hold the ```vector```, only a reference to it (a pointer). {.fragment}
 
 --
 
@@ -1220,13 +1225,13 @@ for (int i : { 1, 2, 3, 4, 5, 6 } | even_squares )
 --
 
 ```
-$ g++ -std=c++20 -fconcepts rev_view_test.cpp 
-rev_view_test.cpp: In function ‘int main()’:
-rev_view_test.cpp:15:38: error: expected ‘)’ before ‘|’ token
+$ g++ -std=c++20 -fconcepts ref_view_test.cpp 
+ref_view_test.cpp: In function ‘int main()’:
+ref_view_test.cpp:15:38: error: expected ‘)’ before ‘|’ token
    15 |     for (int i : { 1, 2, 3, 4, 5, 6 } | even_squares)
       |         ~                            ^~
       |                                      )
-rev_view_test.cpp:15:39: error: expected primary-expression before ‘|’ token
+ref_view_test.cpp:15:39: error: expected primary-expression before ‘|’ token
    15 |     for (int i : { 1, 2, 3, 4, 5, 6 } | even_squares)
       |                                       ^
 ```
